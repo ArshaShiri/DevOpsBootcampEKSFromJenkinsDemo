@@ -34,8 +34,8 @@ Add the follwowing blueprint from the link above:
     apiVersion: v1
     clusters:
     - cluster:
-        server: $cluster_endpoint
-        certificate-authority-data: $certificate_data
+        server: https://013A4FA1DDB3D016A97BAA637468C527.gr7.eu-central-1.eks.amazonaws.com
+        certificate-authority-data: explained below.
       name: arn:aws:eks:$region_code:$account_id:cluster/$cluster_name
     contexts:
     - context:
@@ -58,6 +58,17 @@ Add the follwowing blueprint from the link above:
             # - "- --role"
             # - "arn:aws:iam::$account_id:role/my-role"
           # env:
-            # - name: "AWS_PROFILE"
+            # - name: "demo-cluster"
             #   value: "aws-profile"
+
+The Server value is derived from EKS cluster:
+
+![image](https://user-images.githubusercontent.com/18715119/234370588-46a1b626-0407-4a8c-8050-5099477a52af.png)
+
+For getting the value for `certificate-authority-data`
+
+    # On the local machine
+    cat .kube/config
+    
+
 
