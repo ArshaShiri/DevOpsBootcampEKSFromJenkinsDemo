@@ -84,3 +84,5 @@ After the creation of the config file, we move it to our container:
     
     # We can now confirm the copy and check if the config file can be found in the .kube directory
     docker exec -it {container-id} bash
+    
+## Create AWS Credentials    
