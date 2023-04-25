@@ -70,5 +70,17 @@ For getting the value for `certificate-authority-data`
     # On the local machine
     cat .kube/config
     
-
-
+After the creation of the config file, we move it to our container:
+    
+    docker exec -it {container-id} bash
+    cd ~
+    
+    # This gives us the path that the Kube config file will end up in. (/var/jenkins_home)
+    pwd
+    
+    mkdir .kube
+    exit
+    docker cp config {container-id}:/var/jenkins_home/.kube/
+    
+    # We can now confirm the copy and check if the config file can be found in the .kube directory
+    docker exec -it {container-id} bash
