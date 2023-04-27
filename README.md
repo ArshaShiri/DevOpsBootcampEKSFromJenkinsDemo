@@ -99,5 +99,4 @@ We also create another one for aws_secret_access_key:
 
 ![image](https://user-images.githubusercontent.com/18715119/234789293-d297dd4d-2f56-437a-8654-cbc4ef7da944.png)
 
-
-
+## Configure Jenkinsfile to deploy to EKS
