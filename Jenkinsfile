@@ -19,7 +19,7 @@ pipeline {
             environment {
                // The IAM authenticator will need these two environemnt variables to be able to access
                // AWS.
-               AWS_ACCESS_KEY_ID = credentials('jenkins_aws_access_key_id')
+               AWS_ACCESS_KEY_ID = credentials('jenkins_aws_access_id')
                AWS_SECRET_ACCESS_KEY = credentials('jenkins_aws_access_key')
             }
             steps {
