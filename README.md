@@ -85,4 +85,19 @@ After the creation of the config file, we move it to our container:
     # We can now confirm the copy and check if the config file can be found in the .kube directory
     docker exec -it {container-id} bash
     
-## Create AWS Credentials    
+## Create AWS Credentials
+
+It is best practice to create a new user for Jenkins on AWS to restrict the access. In this exercise we use the admin user for the sake of simplicity. We create a new credential in Jenkins (in this case in our multibranch pipeline)
+
+The key can be accessed under ~/.aws/credentials
+
+aws_access_key_id:
+
+![image](https://user-images.githubusercontent.com/18715119/234788969-79c90687-781a-4377-97ba-999177ea179f.png)
+
+We also create another one for aws_secret_access_key:
+
+![image](https://user-images.githubusercontent.com/18715119/234789293-d297dd4d-2f56-437a-8654-cbc4ef7da944.png)
+
+
+
