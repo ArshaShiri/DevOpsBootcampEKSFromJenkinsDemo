@@ -26,16 +26,26 @@ We can now exit the docker container.
 We don't have any editor inside the Docker container. We are going to create the config file on the server itself and copy it to the container.
 The instructions can be accessed [here](https://docs.aws.amazon.com/eks/latest/userguide/create-kubeconfig.html)
     
-    # Craete the config file
-    vim config
+    # In our local machine:
+    export region_code=eu-central-1
+    export cluster_name=demo-cluster
+    export account_id=0000000000
     
-Add the follwowing blueprint from the link above:
-
+    cluster_endpoint=$(aws eks describe-cluster \
+        --region $region_code \
+        --name $cluster_name \
+        --query "cluster.endpoint" \
+        --output text)
+    
+    # Continue with:
+    
+    #!/bin/bash
+    read -r -d '' KUBECONFIG <<EOF
     apiVersion: v1
     clusters:
     - cluster:
-        server: https://013A4FA1DDB3D016A97BAA637468C527.gr7.eu-central-1.eks.amazonaws.com
-        certificate-authority-data: explained below.
+        server: $cluster_endpoint
+        certificate-authority-data: $certificate_data
       name: arn:aws:eks:$region_code:$account_id:cluster/$cluster_name
     contexts:
     - context:
@@ -55,24 +65,17 @@ Add the follwowing blueprint from the link above:
             - "token"
             - "-i"
             - "$cluster_name"
-            # - "- --role"
-            # - "arn:aws:iam::$account_id:role/my-role"
-          # env:
-            # - name: "demo-cluster"
-            #   value: "aws-profile"
+            - "--role"
+            - "arn:aws:iam::$account_id:role/eksctl-demo-cluster-cluster-ServiceRole-N0WJU5IFOGX0"
+    EOF
+    echo "${KUBECONFIG}" > ~/config
 
-The Server value is derived from EKS cluster:
-
-![image](https://user-images.githubusercontent.com/18715119/234370588-46a1b626-0407-4a8c-8050-5099477a52af.png)
-
-For getting the value for `certificate-authority-data`
-
-    # On the local machine
-    cat ~/.kube/config
     
-After the creation of the config file, we move it to our container:
+    # Copy the generate file to the server where Jenkins is running on a docker container
+    scp config root@164.90.231.208:/root
     
-    docker exec -it {container-id} bash
+    # On the server where the container is running
+    docker exec -it {container-id-of-jenkins} bash
     cd ~
     
     # This gives us the path that the Kube config file will end up in. (/var/jenkins_home)
@@ -81,7 +84,7 @@ After the creation of the config file, we move it to our container:
     mkdir .kube
     exit
     docker cp config {container-id}:/var/jenkins_home/.kube/
-    
+     
     # We can now confirm the copy and check if the config file can be found in the .kube directory
     docker exec -it {container-id} bash
     
@@ -100,3 +103,5 @@ We also create another one for aws_secret_access_key:
 ![image](https://user-images.githubusercontent.com/18715119/234789293-d297dd4d-2f56-437a-8654-cbc4ef7da944.png)
 
 ## Configure Jenkinsfile to deploy to EKS
+
+The configuration steps are added to the Jenkinsfile.
