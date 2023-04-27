@@ -68,7 +68,7 @@ The Server value is derived from EKS cluster:
 For getting the value for `certificate-authority-data`
 
     # On the local machine
-    cat .kube/config
+    cat ~/.kube/config
     
 After the creation of the config file, we move it to our container:
     
