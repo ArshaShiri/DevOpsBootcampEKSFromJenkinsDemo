@@ -1,4 +1,4 @@
-# Demo for Deploying EKS Cluster from Jenkins
+# Demo for Deploying to EKS Cluster from Jenkins
 
 ## Install Kubectl Inside the Docker container
 
