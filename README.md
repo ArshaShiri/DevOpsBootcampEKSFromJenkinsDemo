@@ -1,14 +1,32 @@
 # Demo for Deploying to EKS Cluster from Jenkins
 
+## Creating the EKS Cluster Using eksctl
+
+    eksctl create cluster \
+    --name demo-cluster \
+    --version 1.25 \
+    --region eu-central-1 \
+    --nodegroup-name demo-nodes \
+    --node-type t2.micro \
+    --nodes 2 \
+    --nodes-min 1 \
+    --nodes-max 3
+
+The command line tool can be downloaded [here](https://eksctl.io/).
+
+In order to deploy from the Jenkins pipeline to the EKS cluster, the following steps need to be taken:
+
 ## Install Kubectl Inside the Docker container
 
-We want to isntall Kubectl inside the container that Jenkins running. The instructions are writte [here](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/).
+We want to install Kubectl inside the container that Jenkins is running. The instructions are written [here](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/).
 
     docker exec -u 0 -it {container-id} bash
   
 ## Install AWS IAM Authenticator
 
-For instructions navigate [here](https://docs.aws.amazon.com/eks/latest/userguide/install-aws-iam-authenticator.html).
+We need to authenticate with AWS, as a result, we need this command line tool. When an EKS cluster is created using the EKS control tool, the IAM Authenticator is automatically installed. We need this tool, however, on our Jenkins container. For instructions navigate [here](https://docs.aws.amazon.com/eks/latest/userguide/install-aws-iam-authenticator.html).
+
+Inside the running Jenkins container:
 
     curl -Lo aws-iam-authenticator https://github.com/kubernetes-sigs/aws-iam-authenticator/releases/download/v0.5.9/aws-iam-authenticator_0.5.9_linux_amd64
   
@@ -23,7 +41,9 @@ We can now exit the docker container.
     exit
     
 ## Create Kube Config File
-We don't have any editor inside the Docker container. We are going to create the config file on the server itself and copy it to the container.
+This file is used to connect to the cluster. This file will have all the information in it to authenticate with the AWS account (using the authenticator) and the K8s cluster. This file is basically the same file that is also available locally on our machine. When EKS cluster is created the `~/.kube` folder is created. The config file then can be found under `./kube/config`. 
+
+We don't have any editor inside the Docker container. We will create the config file on the server and copy it to the container.
 The instructions can be accessed [here](https://docs.aws.amazon.com/eks/latest/userguide/create-kubeconfig.html)
     
     # In our local machine:
