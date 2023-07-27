@@ -147,3 +147,6 @@ We also create another one for aws_secret_access_key:
 ## Configure Jenkinsfile to deploy to EKS
 
 The configuration steps are added to the Jenkinsfile.
+
+![image](https://github.com/ArshaShiri/DevOpsBootcampEKSFromJenkinsDemo/assets/18715119/4fc2c3b0-cb02-4ec5-a57b-694bd938cf7a)
+
