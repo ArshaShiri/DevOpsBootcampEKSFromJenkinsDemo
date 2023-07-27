@@ -2,6 +2,8 @@
 
 ## Creating the EKS Cluster Using eksctl
 
+The command line tool can be downloaded [here](https://eksctl.io/).
+
     eksctl create cluster \
     --name demo-cluster \
     --version 1.25 \
@@ -12,7 +14,8 @@
     --nodes-min 1 \
     --nodes-max 3
 
-The command line tool can be downloaded [here](https://eksctl.io/).
+![image](https://github.com/ArshaShiri/DevOpsBootcampEKSFromJenkinsDemo/assets/18715119/b7f233fc-e4d6-4be1-9358-1c99e0910af2)
+
 
 In order to deploy from the Jenkins pipeline to the EKS cluster, the following steps need to be taken:
 
