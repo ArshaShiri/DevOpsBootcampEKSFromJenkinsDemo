@@ -48,19 +48,25 @@ This file is used to connect to the cluster. This file will have all the informa
 
 We don't have any editor inside the Docker container. We will create the config file on the server and copy it to the container.
 The instructions can be accessed [here](https://docs.aws.amazon.com/eks/latest/userguide/create-kubeconfig.html)
-    
+
     # In our local machine:
     export region_code=eu-central-1
     export cluster_name=demo-cluster
-    export account_id=0000000000
-    
+    export account_id={account_id}
+
     cluster_endpoint=$(aws eks describe-cluster \
+    --region $region_code \
+    --name $cluster_name \
+    --query "cluster.endpoint" \
+    --output text)
+
+    certificate_data=$(aws eks describe-cluster \
         --region $region_code \
         --name $cluster_name \
-        --query "cluster.endpoint" \
+        --query "cluster.certificateAuthority.data" \
         --output text)
-    
-    # Continue with:
+
+We then run the following script:    
     
     #!/bin/bash
     read -r -d '' KUBECONFIG <<EOF
@@ -89,16 +95,21 @@ The instructions can be accessed [here](https://docs.aws.amazon.com/eks/latest/u
             - "-i"
             - "$cluster_name"
             - "--role"
-            - "arn:aws:iam::$account_id:role/eksctl-demo-cluster-cluster-ServiceRole-N0WJU5IFOGX0"
+            - "arn:aws:iam::$account_id:role/eksctl-demo-cluster-cluster-ServiceRole-IQSDTEOQHLK4"
+          # env:
+            # - name: "AWS_PROFILE"
+            #   value: "aws-profile"
     EOF
-    echo "${KUBECONFIG}" > ~/config
+    echo "${KUBECONFIG}" > ~/test_kube/config
 
+
+Finally
     
-    # Copy the generate file to the server where Jenkins is running on a docker container
-    scp config root@164.90.231.208:/root
+    # Copy the generated file to the server where Jenkins is running on a docker container
+    scp config root@{Jenkins_server_ip}:/root
     
     # On the server where the container is running
-    docker exec -it {container-id-of-jenkins} bash
+    docker exec -it {container_id_of_jenkins} bash
     cd ~
     
     # This gives us the path that the Kube config file will end up in. (/var/jenkins_home)
@@ -106,7 +117,7 @@ The instructions can be accessed [here](https://docs.aws.amazon.com/eks/latest/u
     
     mkdir .kube
     exit
-    docker cp config {container-id}:/var/jenkins_home/.kube/
+    docker cp config {container_id}:/var/jenkins_home/.kube/
      
     # We can now confirm the copy and check if the config file can be found in the .kube directory
     docker exec -it {container-id} bash
