@@ -94,8 +94,8 @@ We then run the following script:
             - "token"
             - "-i"
             - "$cluster_name"
-            - "--role"
-            - "arn:aws:iam::$account_id:role/eksctl-demo-cluster-cluster-ServiceRole-IQSDTEOQHLK4"
+            # - "--role"
+            # - "arn:aws:iam::$account_id:role/eksctl-demo-cluster-cluster-ServiceRole-IQSDTEOQHLK4"
           # env:
             # - name: "AWS_PROFILE"
             #   value: "aws-profile"
@@ -121,8 +121,16 @@ Finally
      
     # We can now confirm the copy and check if the config file can be found in the .kube directory
     docker exec -it {container-id} bash
+
+We can furhter test if the cluster is accessible from the container:
+
+    # On the local machine we can access the following values by "cat ~/.aws/credentials" 
+    export AWS_ACCESS_KEY_ID={aws_access_id}
+    export AWS_SECRET_ACCESS_KEY={aws_secret_access_key}
+
+    kubectl get svc
     
-## Create AWS Credentials
+## Create AWS Credentials on Jenkins
 
 It is best practice to create a new user for Jenkins on AWS to restrict the access. In this exercise we use the admin user for the sake of simplicity. We create a new credential in Jenkins (in this case in our multibranch pipeline)
 
